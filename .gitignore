@@ -1,7 +1,10 @@
-*.ss~
-*.ss#*
-.#*.ss
+# Racket compiled files
+compiled/
 
-*.scm~
-*.scm#*
-.#*.scm
+# common backups, autosaves, lock files, OS meta-files
+*~
+\#*
+.#*
+.DS_Store
+*.bak
+TAGS
