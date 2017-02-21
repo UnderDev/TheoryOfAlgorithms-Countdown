@@ -13,8 +13,8 @@
 (define operators (list - + / *))
 
 
-; Defining the List of Choosen Numbers
-(define choosenNums (list 5 25))
+; Defining the List of Chosen Numbers
+(define ChosenNums (list 5 25))
 
 ;Random Number Function Takes in Two Numbers and returns a number in that range
 (define (rnd-num a b)
@@ -36,8 +36,8 @@ lNums
 "Operators List"
 operators
 
-"Choosen Numbers List"
-choosenNums
+"Chosen Numbers List"
+ChosenNums
 
 "TargetNum:"
 targetNum
