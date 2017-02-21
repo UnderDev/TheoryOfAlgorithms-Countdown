@@ -4,8 +4,29 @@ The following project will hopefully solve the Countdown Numbers Game.
 
 The project will be written in Racket and will hopefully demonstrate the uses of functional programming.
 
+## Things to Keep in Mind
+* **13,243** Possible combinations that can be selected and can be combined to make **10,871,986** distinct solutions of numbers and target numbers.
+
+* All target numbers achievable given the correct starting numbers.
+
+* Set **{1,1,2,2,3,3}** is the only set that cant produce a 3 digit number, Total **81**.
+
 ## Possible Solution Ideas
 * Brute Force
+
+
+## Optimisations - Things to keep in mind for later
+
+* No benefit in Multiply/Dividing by 1 at any stage.
+
+* Posible Solution cannot becomes negative at any stage.
+
+* Similarly if the solution becomes non-integer.
+
+* If x÷y=y or x-y=y , than this step is redundant.
+
+* Check for Operators used on a Zero value.
+
 
 ## Installation
 
