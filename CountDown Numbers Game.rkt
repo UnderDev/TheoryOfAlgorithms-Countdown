@@ -10,19 +10,21 @@
 (define lNums (list 25 50 75 100))
 
 ; Defining the List of Large Numbers
-(define operators (list - + / *))
+(define operators '(list - + / *))
 
 
-; Defining the List of Choosen Numbers
-(define choosenNums (list 5 25))
+; Defining the List of Chosen Numbers
+(define ChosenNums (list 5 25 10))
 
 ;Random Number Function Takes in Two Numbers and returns a number in that range
 (define (rnd-num a b)
   (random a b))
+
 ;OR
+
 ;(rnd-num 101 999)
 
-; Defining The Target Number
+; Defining The Target Number (randdom number Between 101 and 999)
 (define targetNum (rnd-num 101 999))
 
 
@@ -36,29 +38,42 @@ lNums
 "Operators List"
 operators
 
-"Choosen Numbers List"
-choosenNums
+"Chosen Numbers List"
+ChosenNums
 
 "TargetNum:"
 targetNum
 
 
+;Cartesian cartesian-product gets all permemtations of the lists passed in 
+(define posEval (cartesian-product '(* - + /) ( list 5 25 10)  (list 5 25 10)))
 
 
+;Define The NameSpace for Eval
+(define ns (make-base-namespace))
 
-
-
-
-
-
-; oper is the operation to apply to the function elements.
-; id is the identity for oper (when used with oper nothing changes).
-(define (f oper id l)
+;Recursion On List of posible combinations
+;Then Evaluate them and return a new list
+(define (evalListRec l a)
   (if (null? l)
-      id
-      (oper (car l) (f oper id (cdr l)))))
+      a
+      (evalListRec (cdr l)(cons (eval (car l) ns) a))))
 
-; Now define fsum, which does the same thing as sum above, but define it using f.
-; Note that f takes three arguments, and all fsum does is hard-code two of those.
-(define (fsum l) (f + 0 l))
-(fsum (list 1 2 3 4 5))
+
+;Defines a function that takes in a list and a function,
+;passing that list into the function aswell 
+(define (evaluateList l )(evalListRec l null))
+
+
+;Call The Function And Pass in the List
+(evaluateList posEval)
+
+
+
+
+
+
+
+
+
+
