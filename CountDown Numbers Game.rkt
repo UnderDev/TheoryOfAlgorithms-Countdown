@@ -50,6 +50,19 @@ targetNum
 
 
 
+
+;=================================> Handy Things To Keep In Mind <===================================================
+
+;(remove-duplicates posEval) ;Removes duplicates from a list
+
+
+
+
+;====================================================================================================================
+
+
+
+
 ;Cartesian cartesian-product gets all permemtations of the lists passed in 
 (define posEval (cartesian-product '(* - + /) ( list 5 25 10)  (list 5 25 10)))
 

@@ -137,7 +137,7 @@ evall
   ;(* 5 10)
   ;(* 25 5)
   ;Etc
-(define posEval (cartesian-product '(* - + /) ( list 5 25 10)  (list 5 25 10)))
+(define posEval (cartesian-product '(* - + /) ( list 5 25 10 5)  (list 5 25 10 5)))
 
 ;(define posEval (cartesian-product (list 1 2) (list 4 3)))
 
@@ -219,16 +219,30 @@ posEval
 ;      (evalCond (cdr l)(cons (eval (car l) ns) a)))
 ;    )))
 
-;(and (= 2 2) (> 2 1)) 
+;(and (= 2 2) (> 2 1))
 
+
+;Working through the list of pos solutions
+;'((* 5 5)
+;  (* 5 25))
+(car posEval);'(* 5 5)
+(cdr (car posEval));'(5 5)
+(car(cdr (car posEval)));5
+(cadr(cdr (car posEval)));5
+(equal? (car(cdr (car posEval))) (cadr(cdr (car posEval))));#t
 
 
 ;Atempted Recursion on list + using eval to evaluate them
 (define (evalCond l a)
   (cond ((null? l) a)
-        '((positive? (eval (car l) ns)) (evalCond (cdr l)(cons (eval (car l) ns) a)))
-        ((integer? (eval (car l) ns)) (evalCond (cdr l)(cons (eval (car l) ns) a)))
+        ((and (integer? (eval (car l) ns)) (positive? (eval (car l) ns)) (equal? 30 (eval (car l) ns))) (evalCond (cdr l)(cons (car l)  a)))
         (else (evalCond (cdr l) a))))
+
+; Works for getting all the pairs as a list that give me a number = 30
+;((and (integer? (eval (car l) ns)) (positive? (eval (car l) ns)) (equal? 30 (eval (car l) ns))) (evalCond (cdr l)(cons (car l)  a))) ; evaluates the list of pos com(cons (eval(car l)ns)a)))
+;((equal? (car(cdr (car l))) (cadr(cdr (car l)))) (evalCond (cdr l)(cons (car l)  a))) ;EQUAL 
+;((not(equal? (car(cdr (car l))) (cadr(cdr (car l))))) (evalCond (cdr l)(cons (car l)  a))) ;NOT EQUAL
+
 
 
 
@@ -242,8 +256,6 @@ posEval
 ;      )))
 
 
-
-
    ; Both Working 100%
    ; (if (integer? (eval (car l) ns))
    ; (if (positive (eval (car l) ns))
@@ -253,10 +265,11 @@ posEval
 (define (stuffCond l )(evalCond l null))
 
 ;
-(define tester (stuffCond posEval))
+(define solutions (remove-duplicates(stuffCond posEval)))
 
 ;Call the function and evaluate
-tester
+solutions
+
 
 
 
