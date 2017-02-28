@@ -23,13 +23,14 @@
 (define (rnd-num a b)
   (random a b))
 
-;OR
-
-;(rnd-num 101 999)
-
 ; Defining The Target Number (randdom number Between 101 and 999)
-(define targetNum (rnd-num 101 999))
+'(define targetNum (rnd-num 101 999))
 
+;Cartesian cartesian-product gets all permemtations of the lists passed in 
+(define posEval (cartesian-product '(* - + /) ( list 5 25)  (list 5 25)))
+
+;Temp Target Number For Testing
+(define targetNum 30)
 
 ;=================================> Print out the lists <===========================================================
 "Small Number Lists"
@@ -46,36 +47,22 @@ ChosenNums
 
 "TargetNum:"
 targetNum
-;====================================================================================================================
-
 
 
 
 ;=================================> Handy Things To Keep In Mind <===================================================
 
 ;(remove-duplicates posEval) ;Removes duplicates from a list
-
-
-
-
-;====================================================================================================================
-
-
-
-
-;Cartesian cartesian-product gets all permemtations of the lists passed in 
-(define posEval (cartesian-product '(* - + /) ( list 5 25 10)  (list 5 25 10)))
+;(random 101 999) ;Random Num Between 101 999
 
 
 ;=================================> Eval On List of Pos Combinations <===============================================
 ;Recursion On List of posible combinations
 ;Then Evaluate them and return a new list
-'(define (evalListRec l a)
-  (if (null? l)
-      a
-      (evalListRec (cdr l)(cons (eval (car l) ns) a))))
-;====================================================================================================================
-
+;(define (evalListRec l a)
+  ;(if (null? l)
+      ;a
+      ;(evalListRec (cdr l)(cons (eval (car l) ns) a))))
 
 
 ;=================================> Eval On List of Pos Combinations Optimized <=====================================
@@ -88,17 +75,28 @@ targetNum
         ((and (integer? (eval (car l) ns)) (positive? (eval (car l) ns))) (evalListRec (cdr l)(cons (eval (car l) ns) a)))
         (else (evalListRec (cdr l) a))))
 
-;====================================================================================================================
+
+;==> Attempt 2 Match all with target number <==
+(define (evalCond l a)
+  (cond ((null? l) a)
+        ((and (integer? (eval (car l) ns)) (positive? (eval (car l) ns)) (equal? targetNum (eval (car l) ns))) (evalCond (cdr l)(cons (car l)  a)))
+        (else (evalCond (cdr l) a))))
 
 
 
 ;Defines a function that takes in a list and a function,
 ;passing that list into the function aswell 
-(define (evaluateList l )(evalListRec l null))
+(define (evaluateList l )(evalCond l null))
 
+;Remove Duplicates from the List of pos combinations
+(define solutions (remove-duplicates posEval))
+"Pos Solutions duplicates removed"
+solutions
 
-;Call The Function And Pass in the List
-(evaluateList posEval)
+;Call The Function evaluateList And Pass in the List
+;Use an if here to check if empty list, then display message
+"Solutions Shown Below"
+(evaluateList solutions)
 
 
 
