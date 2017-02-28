@@ -12,8 +12,18 @@ The project will be written in Racket and will hopefully demonstrate the uses of
 * Set **{1,1,2,2,3,3}** is the only set that cant produce a 3 digit number, Total **81**.
 
 ## Possible Solution Ideas
-* Brute Force
+* Brute Force  
+  Loop through every posible combination and evaluate the results;
+  
+* Map, Permutations, Combinations  
+  ```(map minus (permutations (combinations (list a b c d) 2)))```   
+  Get every permentation of the list of combinations of 2 from the List of Choosen numbers.
+  Then pass that list into the required function E.g minus , plus , divide , mult
+  Map maps each item in the list to a function.
 
+* Cartisian-Product  
+  Create a list of every compination between the 3 lists given, (operators) (choosen nums) (choosen nums)
+  Then eval the list using a function.
 
 ## Optimisations - Things to keep in mind for later
 
