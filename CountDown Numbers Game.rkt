@@ -54,7 +54,7 @@ targetNum
 
 ;(remove-duplicates posEval) ;Removes duplicates from a list
 ;(random 101 999) ;Random Num Between 101 999
-
+;(modulo 10 4)) ; gets the Moduls of 2 numbers
 
 ;=================================> Eval On List of Pos Combinations <===============================================
 ;Recursion On List of posible combinations

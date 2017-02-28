@@ -11,20 +11,11 @@
 
 (define t 125)
 
-(define numsPicked (list 5 25 10))
+;Define a Namespace (needed for eval)
+(define ns (make-base-namespace))
 
-; Hard Coded List of Posible Solutions
-(define evall (list
-	(+ a b)
-	(+ b a)
-	(- a b)
-	(- b a)
-	(* a b)
-	(* b a)
-	(/ a b)
-	(/ b a)
-))
-evall
+
+(define numsPicked (list 5 25 10))
 
 ; Recursion - Defining a function that you can pass in an operator and a list
 ; If The Null List? Return the List otherwise 1 - Do the following
@@ -86,27 +77,8 @@ evall
   (permutations (combinations (list a b c) 2)) =
   (5 25)  (5 10)  (25 10)
 
-
 (combinations(permutations (list a b c) ))
 |#
-
-
-(define (plussss l)
-  (if (null? l)
-      1
-      (begin
-       (display l)
-      ;(+ (car l)) (plussss (car (cadr l)))))))
-       (+ (car (car l)) (plussss (cadr(car l)))))))
-      ;( +(car(car l)) (car (cadr l))))))
-
-;first item in the list and the first value + first item in the list and cdr of the first value
-;( + (car(car posEval)) (cadr (car posEval)))
-;(car (cdr (car posEval)))
-;(car (car posEval))
-
-;(map plussss (list posEval))
-
 
 '(map minus (permutations(list a b)))
 '(map mult  (permutations(list a b)))
@@ -119,8 +91,6 @@ evall
 
 '(list->set (map plus (permutations(list a b))))
 
-
-
 '(combinations (list a b c d e f) 2)
 '(permutations (combinations (list a b c) 2))
 '(permutations (combinations(list a b c) 2))
@@ -131,28 +101,15 @@ evall
 
 
 ;Define a list of the cartesian-product of the following lists
-;Results
-;(* 5 5)
-  ;(* 5 25)
-  ;(* 5 10)
-  ;(* 25 5)
-  ;Etc
 (define posEval (cartesian-product '(* - + /) ( list 5 25 10 5)  (list 5 25 10 5)))
 
-;(define posEval (cartesian-product (list 1 2) (list 4 3)))
-
-
 ;Print out the cartesian-product
+"cartesian-product Of List"
 posEval
 
 
-;Define a Namespace (needed for eval)
-(define ns (make-base-namespace))
 
-;(car(posval) ns)
-
-
-;Atempted Recursion on list + using eval to evaluate them
+;Recursion on list + using eval to evaluate them
 (define (evalListRec l a)
   (if (null? l)
       a
@@ -161,11 +118,8 @@ posEval
 ;New function passing in a list, and calling anoter function 
 (define (stuff l )(evalListRec l null))
 
-;
 (define p (stuff posEval))
-
-;Call the function and evaluate
-'p
+;p
 
 
 
@@ -187,49 +141,16 @@ posEval
 ;;Not Correct but looks promising
 ;;(define posEval (cartesian-product '(* - + /) ( list 5 25 10)  (list 5 25 10)))
 ;;(X ops posEval posEval)
+;(eval (car posEval) ns)
 ;===================================================================================
-
-'(eval (car posEval) ns)
-
-;(= (modulo 10 4) 2)
-
-
-
-;;Function below is n power n each loop
-;;Gets all the negitive numbers
-;(define (evalCond l a)
-;  (if (null? l)
-;      a
-;      (begin
-;       (display l)
-;      (evalCond (cdr l)(cons (eval (car l) ns) a)))
-;    ))
-
-
-
-
-;;Gets all the negitive numbers
-;(define (evalCond l a)
-;  (if (null? l)
-;      a
-;      (begin
-;       (display l)
-;    (if (positive? (eval (car l) ns))
-;        (evalCond (cdr l) a)
-;      (evalCond (cdr l)(cons (eval (car l) ns) a)))
-;    )))
-
-;(and (= 2 2) (> 2 1))
 
 
 ;Working through the list of pos solutions
-;'((* 5 5)
-;  (* 5 25))
-(car posEval);'(* 5 5)
-(cdr (car posEval));'(5 5)
-(car(cdr (car posEval)));5
-(cadr(cdr (car posEval)));5
-(equal? (car(cdr (car posEval))) (cadr(cdr (car posEval))));#t
+;(car posEval);'(* 5 5)
+;(cdr (car posEval));'(5 5)
+;(car(cdr (car posEval)));5
+;(cadr(cdr (car posEval)));5
+;(equal? (car(cdr (car posEval))) (cadr(cdr (car posEval))));#t
 
 
 ;Atempted Recursion on list + using eval to evaluate them
@@ -247,20 +168,6 @@ posEval
 
 
 
-;(define (evalCond l a)
-;  (if (null? l)
-;      a
-;      (and (if (positive? (eval (car l) ns)) (integer? (eval (car l) ns))
-;          (evalCond (cdr l)(cons (eval (car l) ns) a)))
-;          (evalCond (cdr l) a)
-;      )))
-
-
-   ; Both Working 100%
-   ; (if (integer? (eval (car l) ns))
-   ; (if (positive (eval (car l) ns))
-
-
 ;New function passing in a list, and calling anoter function 
 (define (stuffCond l )(evalCond l null))
 
@@ -268,9 +175,5 @@ posEval
 (define solutions (remove-duplicates(stuffCond posEval)))
 
 ;Call the function and evaluate
+"Solution"
 solutions
-
-
-
-
-
