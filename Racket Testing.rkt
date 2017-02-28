@@ -1,7 +1,7 @@
 #lang racket
 
 ; Define The List etc
-(define ops (list + - * /))
+(define ops '(list + - * /))
 (define a 5)
 (define b 25)
 (define c 10)
@@ -137,7 +137,7 @@ evall
   ;(* 5 10)
   ;(* 25 5)
   ;Etc
-(define posEval (cartesian-product '(* - + /) ( list 5 25 10)  (list 5 25 10)))
+(define posEval (cartesian-product '(* - + /) ( list 5 25 10 5)  (list 5 25 10 5)))
 
 ;(define posEval (cartesian-product (list 1 2) (list 4 3)))
 
@@ -152,7 +152,7 @@ posEval
 ;(car(posval) ns)
 
 
-;Atempted Recursion on list +using eval to evaluate them
+;Atempted Recursion on list + using eval to evaluate them
 (define (evalListRec l a)
   (if (null? l)
       a
@@ -165,6 +165,112 @@ posEval
 (define p (stuff posEval))
 
 ;Call the function and evaluate
-p
+'p
+
+
+
+;============================= Custom Cartisian-product ============================
+;(define (X . sets)
+;  (if (null? sets) '(())
+;      (let ((tails (apply X (cdr sets))))
+;        (apply append
+;               (map (lambda (h)
+;                      (map (lambda (t) (cons h t)) tails))
+;                    (car sets))))))
+;
+;(define lst (X ops numsPicked numsPicked))
+;(define (stuffff l )(evalListRec lst null))
+;
+;;
+;(define ccc (stuffff lst))
+;ccc
+;;Not Correct but looks promising
+;;(define posEval (cartesian-product '(* - + /) ( list 5 25 10)  (list 5 25 10)))
+;;(X ops posEval posEval)
+;===================================================================================
+
+'(eval (car posEval) ns)
+
+;(= (modulo 10 4) 2)
+
+
+
+;;Function below is n power n each loop
+;;Gets all the negitive numbers
+;(define (evalCond l a)
+;  (if (null? l)
+;      a
+;      (begin
+;       (display l)
+;      (evalCond (cdr l)(cons (eval (car l) ns) a)))
+;    ))
+
+
+
+
+;;Gets all the negitive numbers
+;(define (evalCond l a)
+;  (if (null? l)
+;      a
+;      (begin
+;       (display l)
+;    (if (positive? (eval (car l) ns))
+;        (evalCond (cdr l) a)
+;      (evalCond (cdr l)(cons (eval (car l) ns) a)))
+;    )))
+
+;(and (= 2 2) (> 2 1))
+
+
+;Working through the list of pos solutions
+;'((* 5 5)
+;  (* 5 25))
+(car posEval);'(* 5 5)
+(cdr (car posEval));'(5 5)
+(car(cdr (car posEval)));5
+(cadr(cdr (car posEval)));5
+(equal? (car(cdr (car posEval))) (cadr(cdr (car posEval))));#t
+
+
+;Atempted Recursion on list + using eval to evaluate them
+(define (evalCond l a)
+  (cond ((null? l) a)
+        ((and (integer? (eval (car l) ns)) (positive? (eval (car l) ns)) (equal? 30 (eval (car l) ns))) (evalCond (cdr l)(cons (car l)  a)))
+        (else (evalCond (cdr l) a))))
+
+; Works for getting all the pairs as a list that give me a number = 30
+;((and (integer? (eval (car l) ns)) (positive? (eval (car l) ns)) (equal? 30 (eval (car l) ns))) (evalCond (cdr l)(cons (car l)  a))) ; evaluates the list of pos com(cons (eval(car l)ns)a)))
+;((equal? (car(cdr (car l))) (cadr(cdr (car l)))) (evalCond (cdr l)(cons (car l)  a))) ;EQUAL 
+;((not(equal? (car(cdr (car l))) (cadr(cdr (car l))))) (evalCond (cdr l)(cons (car l)  a))) ;NOT EQUAL
+
+
+
+
+
+;(define (evalCond l a)
+;  (if (null? l)
+;      a
+;      (and (if (positive? (eval (car l) ns)) (integer? (eval (car l) ns))
+;          (evalCond (cdr l)(cons (eval (car l) ns) a)))
+;          (evalCond (cdr l) a)
+;      )))
+
+
+   ; Both Working 100%
+   ; (if (integer? (eval (car l) ns))
+   ; (if (positive (eval (car l) ns))
+
+
+;New function passing in a list, and calling anoter function 
+(define (stuffCond l )(evalCond l null))
+
+;
+(define solutions (remove-duplicates(stuffCond posEval)))
+
+;Call the function and evaluate
+solutions
+
+
+
 
 
