@@ -9,8 +9,6 @@
 (define e 7)
 (define f 3)
 
-
-
 (define t 125)
 
 (define numsPicked (list 5 25 10))
@@ -92,24 +90,6 @@ evall
 (combinations(permutations (list a b c) ))
 |#
 
-'(combinations (list a b c d e f) 2)
-'(permutations (combinations (list a b c) 2))
-'(permutations (combinations(list a b c) 2))
-
-;Maps all the combinations
-'(combinations(list numsPicked) 2)
-'(permutations(list numsPicked))
-
-
-;(cartesian-product (list * - + /) ( list 5 25 10)  (list 5 25 10))
-
-(define posEval (cartesian-product (list 1 2) (list 4 3)))
-
-posEval
-
-
-;( +(car(car posEval)) (car (car (cdr posEval))))
-
 
 (define (plussss l)
   (if (null? l)
@@ -121,15 +101,11 @@ posEval
       ;( +(car(car l)) (car (cadr l))))))
 
 ;first item in the list and the first value + first item in the list and cdr of the first value
-( + (car(car posEval)) (cadr (car posEval)))
+;( + (car(car posEval)) (cadr (car posEval)))
 ;(car (cdr (car posEval)))
 ;(car (car posEval))
 
-
- posEval
 ;(map plussss (list posEval))
-
-
 
 
 '(map minus (permutations(list a b)))
@@ -142,3 +118,53 @@ posEval
 
 
 '(list->set (map plus (permutations(list a b))))
+
+
+
+'(combinations (list a b c d e f) 2)
+'(permutations (combinations (list a b c) 2))
+'(permutations (combinations(list a b c) 2))
+
+;Maps all the combinations
+'(combinations(list numsPicked) 2)
+'(permutations(list numsPicked))
+
+
+;Define a list of the cartesian-product of the following lists
+;Results
+;(* 5 5)
+  ;(* 5 25)
+  ;(* 5 10)
+  ;(* 25 5)
+  ;Etc
+(define posEval (cartesian-product '(* - + /) ( list 5 25 10)  (list 5 25 10)))
+
+;(define posEval (cartesian-product (list 1 2) (list 4 3)))
+
+
+;Print out the cartesian-product
+posEval
+
+
+;Define a Namespace (needed for eval)
+(define ns (make-base-namespace))
+
+;(car(posval) ns)
+
+
+;Atempted Recursion on list +using eval to evaluate them
+(define (evalListRec l a)
+  (if (null? l)
+      a
+      (evalListRec (cdr l)(cons (eval (car l) ns) a))))
+
+;New function passing in a list, and calling anoter function 
+(define (stuff l )(evalListRec l null))
+
+;
+(define p (stuff posEval))
+
+;Call the function and evaluate
+p
+
+
