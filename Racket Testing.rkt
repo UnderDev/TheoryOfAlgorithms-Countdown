@@ -1,15 +1,9 @@
 #lang racket
 
 ; Define The List etc
-(define ops '(list + - * /))
-(define a 5)
-(define b 25)
-(define c 10)
-(define d 50)
-(define e 7)
-(define f 3)
+(define opers (list + - * /))
 
-(define t 125)
+(define target 125)
 
 ;Define a Namespace (needed for eval)
 (define ns (make-base-namespace))
@@ -100,20 +94,44 @@
 '(permutations(list numsPicked))
 
 
+"Numbers Used"
+numsPicked
+
 ;Define a list of the cartesian-product of the following lists
-(define posEval (cartesian-product '(* - + /) ( list 5 25 10 5)  (list 5 25 10 5)))
+(define posEval (cartesian-product opers numsPicked  numsPicked))
 
 ;Print out the cartesian-product
 "cartesian-product Of List"
-posEval
+'posEval
 
+
+;(define Comb (combinations numsPicked 2))
+(define Permut (permutations numsPicked))
+'Permut
+(define PermutCart (cartesian-product opers Permut))
+'PermutCart
+
+
+(append opers (car Permut))
+
+#|
+(permutations numsPicked) 
+'((5 25 10)
+  (25 5 10)
+  (5 10 25)
+  (10 5 25)
+  (25 10 5)
+  (10 25 5))
+
+
+|#
 
 
 ;Recursion on list + using eval to evaluate them
 (define (evalListRec l a)
   (if (null? l)
       a
-      (evalListRec (cdr l)(cons (eval (car l) ns) a))))
+      (evalListRec (cdr l)(cons (car l) a))))
 
 ;New function passing in a list, and calling anoter function 
 (define (stuff l )(evalListRec l null))
@@ -123,27 +141,39 @@ posEval
 
 
 
-;============================= Custom Cartisian-product ============================
-;(define (X . sets)
-;  (if (null? sets) '(())
-;      (let ((tails (apply X (cdr sets))))
-;        (apply append
-;               (map (lambda (h)
-;                      (map (lambda (t) (cons h t)) tails))
-;                    (car sets))))))
-;
-;(define lst (X ops numsPicked numsPicked))
-;(define (stuffff l )(evalListRec lst null))
-;
-;;
-;(define ccc (stuffff lst))
-;ccc
-;;Not Correct but looks promising
-;;(define posEval (cartesian-product '(* - + /) ( list 5 25 10)  (list 5 25 10)))
-;;(X ops posEval posEval)
-;(eval (car posEval) ns)
-;===================================================================================
 
+(define (testCond l a)
+  (cond ((null? l) a)
+        ((and (integer? (eval (car l) ns)) (positive? (eval (car l) ns)) (equal? 250 (eval (car l) ns))) (testCond (cdr l)(cons (car l)  a)))
+        (else (testCond (cdr l) a))))
+
+
+
+
+;============================= Custom Cartisian-product ============================
+(define (X . sets)
+  (if (null? sets) '(())
+      (let ((tails (apply X (cdr sets))))
+        (apply append
+               (map (lambda (h)
+                      (map (lambda (t) (cons h t)) tails))
+                    (car sets))))))
+
+
+(define lst (X opers numsPicked numsPicked))
+
+(define (stuffff l )(testCond lst null))
+
+(define ccc (stuffff lst))
+'ccc
+
+
+;Not Correct but looks promising
+(define posEval2 (cartesian-product opers numsPicked  numsPicked))
+
+'(X opers numsPicked numsPicked numsPicked) ; (- 25 5 5) etc
+'(eval (car posEval2) ns)
+;===================================================================================
 
 ;Working through the list of pos solutions
 ;(car posEval);'(* 5 5)
@@ -156,7 +186,7 @@ posEval
 ;Atempted Recursion on list + using eval to evaluate them
 (define (evalCond l a)
   (cond ((null? l) a)
-        ((and (integer? (eval (car l) ns)) (positive? (eval (car l) ns)) (equal? 30 (eval (car l) ns))) (evalCond (cdr l)(cons (car l)  a)))
+        ((and (integer? (eval (car l) ns)) (positive? (eval (car l) ns)) (equal? target (eval (car l) ns))) (evalCond (cdr l)(cons (car l)  a)))
         (else (evalCond (cdr l) a))))
 
 ; Works for getting all the pairs as a list that give me a number = 30
@@ -177,3 +207,36 @@ posEval
 ;Call the function and evaluate
 "Solution"
 solutions
+
+
+
+
+;============================> Reverse Polish Notation Solution <=============================
+"==========> Reverse Polish Notation <============"
+
+(define (calculate-RPN lst)
+  (for/fold ([stack '()]) ([token lst])
+    (printf "~a\t -> ~a~N" token stack)
+    (match* (token stack)
+     [((? number? n) s) (cons n s)]
+     [('+ (list x y s ___)) (cons (+ x y) s)]
+     [('- (list x y s ___)) (cons (- y x) s)]
+     [('* (list x y s ___)) (cons (* x y) s)]
+     [('/ (list x y s ___)) (cons (/ y x) s)]
+     [('^ (list x y s ___)) (cons (expt y x) s)]
+     [(x s) (error "calculate-RPN: Cannot calculate the expression:" 
+                   (reverse (cons x s)))])))
+
+
+(calculate-RPN '(6 3 1 / -))
+(define emptylst '())
+(append emptylst (permutations (list 2 7 9 10 50 25)))
+
+
+(append emptylst (permutations (list "a" "b" "c" "d")))
+
+;(define posEval3 (cartesian-product emptylst (permutations (list "a" "b" "c" "d"))))
+
+
+
+

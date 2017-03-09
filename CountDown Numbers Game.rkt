@@ -12,24 +12,31 @@
 ; Defining the List of Large Numbers
 (define operators '(list - + / *))
 
+;Function to get a random Number from the List Passed in
+(define (pick-item l)
+  (list-ref l (random (length l))))
+
+(pick-item(list 3 4 5 6 7)) ;Working But need to do several times
+
+;Maby get a random number in the range 1-10 for small numbers
 
 ; Defining the List of Chosen Numbers
-(define ChosenNums (list 5 25 10))
+(define ChosenNums sNums)
 
-;Define The NameSpace for Eval
+; Define The NameSpace for Eval
 (define ns (make-base-namespace))
 
-;Random Number Function Takes in Two Numbers and returns a number in that range
+; Random Number Function Takes in Two Numbers and returns a number in that range
 (define (rnd-num a b)
   (random a b))
 
 ; Defining The Target Number (randdom number Between 101 and 999)
 '(define targetNum (rnd-num 101 999))
 
-;Cartesian cartesian-product gets all permemtations of the lists passed in 
+; Cartesian cartesian-product gets all permemtations of the lists passed in 
 (define posEval (cartesian-product '(* - + /) ( list 5 25)  (list 5 25)))
 
-;Temp Target Number For Testing
+; Temp Target Number For Testing
 (define targetNum 30)
 
 ;=================================> Print out the lists <=====================================================
