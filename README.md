@@ -84,6 +84,8 @@ TODO: Describe the installation process
 
 [Reverse Polish Notation](https://en.wikipedia.org/wiki/Reverse_Polish_notation) Wiki Explained.
 
+[Reverse Polish Notation Calculator](https://rosettacode.org/wiki/Parsing/RPN_calculator_algorithm#Racket) Racket Code.
+
 [CountDown Numbers Game](http://datagenetics.com/blog/august32014/index.html) Information And Solver.
 
 [Combinations / Permutations](http://www.mathsisfun.com/combinatorics/combinations-permutations.html) Explained.
