@@ -2,7 +2,7 @@
 
 ;() Empty List
 
-;=================================>  Inital Setup <=================================================================
+;=================================>  Inital Setup <===========================================================
 ; Defining the List of Small Numbers
 (define sNums (list 1 1 2 2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 10 10))
 
@@ -32,7 +32,7 @@
 ;Temp Target Number For Testing
 (define targetNum 30)
 
-;=================================> Print out the lists <===========================================================
+;=================================> Print out the lists <=====================================================
 "Small Number Lists"
 sNums
 
@@ -50,13 +50,13 @@ targetNum
 
 
 
-;=================================> Handy Things To Keep In Mind <===================================================
+;=================================> Handy Things To Keep In Mind <============================================
 
 ;(remove-duplicates posEval) ;Removes duplicates from a list
 ;(random 101 999) ;Random Num Between 101 999
 ;(modulo 10 4)) ; gets the Moduls of 2 numbers
 
-;=================================> Eval On List of Pos Combinations <===============================================
+;=================================> Eval On List of Pos Combinations <========================================
 ;Recursion On List of posible combinations
 ;Then Evaluate them and return a new list
 ;(define (evalListRec l a)
@@ -65,7 +65,7 @@ targetNum
       ;(evalListRec (cdr l)(cons (eval (car l) ns) a))))
 
 
-;=================================> Eval On List of Pos Combinations Optimized <=====================================
+;=================================> Eval On List of Pos Combinations Optimized <==============================
 ;Pass in a list and an empty list,
 ;check each item in the list and evaluate the result, adding it to the empty list only
 ;IF its an integer and a positive number
@@ -95,8 +95,66 @@ solutions
 
 ;Call The Function evaluateList And Pass in the List
 ;Use an if here to check if empty list, then display message
-"Solutions Shown Below"
+"Solutions Shown Below For Target"
+targetNum
 (evaluateList solutions)
+
+
+
+
+
+
+
+
+
+;=================================>Pos Solution Six Numbers <==============================
+;Copyed From https://rosettacode.org/wiki/24_game/Solve#Racket
+; Dosnt Work For All Numbers
+; Eg goal 879,  Numbers '(2 7 9 10 50 25) "Solution Should be 879 = (2×(7+(9×50)))-(10+25)"
+
+(define (in-variants n1 o1 n2 o2 n3 o3 n4)
+  (let ([o1n (object-name o1)]
+        [o2n (object-name o2)]
+        [o3n (object-name o3)])
+    (with-handlers ((exn:fail:contract:divide-by-zero? (λ (_) empty-sequence))) 
+      (in-parallel 
+       (list  (o1 (o2 (o3 n1 n2) n3) n4)
+              (o1 (o2 n1 (o3 n2 n3)) n4)
+              (o1 (o2 n1 n2) (o3 n3 n4))
+              (o1 n1 (o2 (o3 n2 n3) n4))
+              (o1 n1 (o2 n2 (o3 n3 n4))))
+       (list `(((,n1 ,o3n ,n2) ,o2n ,n3) ,o1n ,n4)
+             `((,n1 ,o2n (,n2 ,o3n ,n3)) ,o1n ,n4)
+             `((,n1 ,o2n ,n2) ,o1n (,n3 ,o3n ,n4))
+             `(,n1 ,o1n ((,n2 ,o3n ,n3) ,o2n ,n4))
+             `(,n1 ,o1n (,n2 ,o2n (,n3 ,o3n ,n4))))))))
+
+
+
+(define (find-solutions numbers (goal 173))
+  (define in-operations (list + - * /))
+  (remove-duplicates
+   (for*/list ([n1 numbers]
+               [n2 (remove-from numbers n1)]
+               [n3 (remove-from numbers n1 n2)]
+               [n4 (remove-from numbers n1 n2 n3)]
+               [o1 in-operations]
+               [o2 in-operations]
+               [o3 in-operations]
+               [(res expr) (in-variants n1 o1 n2 o2 n3 o3 n4)]
+               #:when (= res goal))
+     expr)))
+
+ (define (remove-from numbers . n) (foldr remq numbers n))
+
+;(find-solutions '(2 7 9 10 50 25))
+
+
+
+
+
+
+
 
 
 
