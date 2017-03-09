@@ -78,3 +78,20 @@ TODO: Describe the installation process
 * At no intermediate step in the process can the current running total become negative or involve a fraction.
 
 * Each numbered tile can only be used once in the calculation.
+
+## References
+[Racket Documentation](https://docs.racket-lang.org/).
+
+[Reverse Polish Notation](https://en.wikipedia.org/wiki/Reverse_Polish_notation) Wiki Explained.
+
+[CountDown Numbers Game](http://datagenetics.com/blog/august32014/index.html) Information And Solver.
+
+[Combinations / Permutations](http://www.mathsisfun.com/combinatorics/combinations-permutations.html) Explained.
+
+[Math 24 game](https://rosettacode.org/wiki/24_game/Solve#Racket) Similar Solution.
+
+[C# Solution](https://www.codeproject.com/Articles/740035/Countdown-Number-Puzzle-Solver).
+
+[Helpful Solutions](https://rosettacode.org/wiki/Category:Programming_Tasks) To Multiple Games.
+
+
