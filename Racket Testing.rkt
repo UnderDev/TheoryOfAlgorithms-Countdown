@@ -1,7 +1,7 @@
 #lang racket
 
 ; Define The List etc
-(define opers (list + - * /))
+(define opers '(list + - * /))
 
 (define target 125)
 
@@ -213,6 +213,7 @@ solutions
 
 ;============================> Reverse Polish Notation Solution <=============================
 "==========> Reverse Polish Notation <============"
+;https://rosettacode.org/wiki/Parsing/RPN_calculator_algorithm#Racket
 
 (define (calculate-RPN lst)
   (for/fold ([stack '()]) ([token lst])
@@ -229,13 +230,74 @@ solutions
 
 
 (calculate-RPN '(6 3 1 / -))
-(define emptylst '())
-(append emptylst (permutations (list 2 7 9 10 50 25)))
+;(define emptylst '())
+;(append emptylst (permutations (list 2 7 9 10 50 25)))
 
 
-(append emptylst (permutations (list "a" "b" "c" "d")))
+;(append emptylst (permutations (list "a" "b" "c" "d")))
 
 ;(define posEval3 (cartesian-product emptylst (permutations (list "a" "b" "c" "d"))))
+
+
+;Racket Help In Class
+
+;RACKET HELP RPN
+;see num. add to stack
+;see operator , pop 2 nums from stack, apply the operator to the 2 nums and add back to the list
+;every per/combination ,check on every part of the stack if the number gets to a - fraction etc.
+
+;!quote on operators to not eval
+
+
+;print stack on getting the right
+
+
+;permutatin factorial
+
+;filter 
+; (100 25 '- 1 '+ )
+
+(define (rand-item l)
+  (list-ref l (random (length l))))
+
+(define startPerm (list '- '+ '/ '* 5 3 25 100))
+(define x (remove-duplicates (permutations startPerm)))
+
+(define (make-rpn l)
+  (append (list 2 9) l(list (rand-item opers))))
+
+
+;(map make-rpn x)
+
+;e = expresion
+;s=stack
+;[s 0] optional argument s=0
+
+(define (valid-rpn? e [s 0])
+  (if (null? e)
+      (if (= s 1) #t #f);if end of the expression last element of stack
+      (if (=(car e) 1);if the car is 1
+      (valid-rpn? (cdr e) (+ 1 s))(display s))))
+      ;();call valid-rpn? again. pop 2 off stack and eval it, then push to the stack 
+      ;()))
+
+(define (posSolu lst)(map make-rpn x))
+
+(posSolu x)
+
+;(calculate-RPN (posSolu x))
+
+
+(valid-rpn? (list 1 -1 1))
+
+
+'(if (=(car (list 1 1 -1)) 1)#t #f)
+
+
+
+
+
+
 
 
 
