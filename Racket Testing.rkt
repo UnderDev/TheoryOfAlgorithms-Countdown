@@ -212,7 +212,7 @@ solutions
 
 
 ;============================> Reverse Polish Notation Solution <=============================
-"==========> Reverse Polish Notation <============"
+"==========> Reverse Polish Notation"
 ;https://rosettacode.org/wiki/Parsing/RPN_calculator_algorithm#Racket
 
 (define (calculate-RPN lst)
@@ -230,6 +230,7 @@ solutions
 
 
 (calculate-RPN '(6 3 1 / -))
+
 ;(define emptylst '())
 ;(append emptylst (permutations (list 2 7 9 10 50 25)))
 
@@ -251,47 +252,66 @@ solutions
 
 ;print stack on getting the right
 
+;evaluate correct RPN
+;(1 1 1 -1 -1 1 1 1 -1 -1 -1)
+
+;cart (op op op op op) 1024 pos 
+;list length ********
+
+;cp all ops all nums
+
+
+
 
 ;permutatin factorial
 
 ;filter 
 ; (100 25 '- 1 '+ )
 
+;Picks a random item from the list Passed in
 (define (rand-item l)
   (list-ref l (random (length l))))
 
 (define startPerm (list '- '+ '/ '* 5 3 25 100))
-(define x (remove-duplicates (permutations startPerm)))
+(define posSolPerm (remove-duplicates (permutations startPerm)))
 
 (define (make-rpn l)
   (append (list 2 9) l(list (rand-item opers))))
 
 
+(define (posSolu lst)(map make-rpn posSolPerm))
+;(posSolu posSolPerm)
+
+;car and the car of the cdr pops the 2 off the list
 ;(map make-rpn x)
+;(calculate-RPN (posSolu x))
+
 
 ;e = expresion
 ;s=stack
 ;[s 0] optional argument s=0
+;(if (=(car (list 1 1 -1)) 1)#t #f)
 
-(define (valid-rpn? e [s 0])
-  (if (null? e)
-      (if (= s 1) #t #f);if end of the expression last element of stack
-      (if (=(car e) 1);if the car is 1
-      (valid-rpn? (cdr e) (+ 1 s))(display s))))
-      ;();call valid-rpn? again. pop 2 off stack and eval it, then push to the stack 
+;======= Checking to see if passed in list is valid RPN
+(define (is-valid-rpn? e [s 0])
+  (begin
+    (printf "~a\t -> ~a~N" e s)
+    (if (null? e)
+        (if (= s 1) #t #f);If the Stack is = 1 at the end, RPN = true else false
+        (if (= (car e) 1);If the car of the list is 1
+            (is-valid-rpn? (cdr e) (+ 1 s));Call is-valid-rpn? with the Cdr and add 1 to the stack
+            (is-valid-rpn? (cdr e) (+ (car e) (cadr e))));ELSE RPN, Add 1 to what ever is on the stack
+        )))
+  ;call valid-rpn? again. pop 2 off stack and eval it, then push to the stack 
       ;()))
-
-(define (posSolu lst)(map make-rpn x))
-
-(posSolu x)
-
-;(calculate-RPN (posSolu x))
+(define templst (list -1 1 1))
+(is-valid-rpn? templst)
 
 
-(valid-rpn? (list 1 -1 1))
 
 
-'(if (=(car (list 1 1 -1)) 1)#t #f)
+
+
 
 
 

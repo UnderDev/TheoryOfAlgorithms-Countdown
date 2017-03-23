@@ -34,7 +34,7 @@
 '(define targetNum (rnd-num 101 999))
 
 ; Cartesian cartesian-product gets all permemtations of the lists passed in 
-(define posEval (cartesian-product '(* - + /) ( list 5 25)  (list 5 25)))
+(define posEval (remove-duplicates (cartesian-product '(* - + /) ( list 5 25)  (list 5 25))))
 
 ; Temp Target Number For Testing
 (define targetNum 30)
@@ -96,15 +96,15 @@ targetNum
 (define (evaluateList l )(evalCond l null))
 
 ;Remove Duplicates from the List of pos combinations
-(define solutions (remove-duplicates posEval))
+;(define solutions (remove-duplicates posEval))
 "Pos Solutions duplicates removed"
-solutions
-
+;solutions
+posEval
 ;Call The Function evaluateList And Pass in the List
 ;Use an if here to check if empty list, then display message
 "Solutions Shown Below For Target"
 targetNum
-(evaluateList solutions)
+(evaluateList posEval)
 
 
 
@@ -114,7 +114,7 @@ targetNum
 
 
 
-;=================================>Pos Solution Six Numbers <==============================
+;=================================> Pos Solution Six Numbers <==============================
 ;Copyed From https://rosettacode.org/wiki/24_game/Solve#Racket
 ; Dosnt Work For All Numbers
 ; Eg goal 879,  Numbers '(2 7 9 10 50 25) "Solution Should be 879 = (2×(7+(9×50)))-(10+25)"
@@ -155,6 +155,51 @@ targetNum
  (define (remove-from numbers . n) (foldr remq numbers n))
 
 ;(find-solutions '(2 7 9 10 50 25))
+
+
+
+
+
+;=================================> Calculate Reverse Polish Notation <==============================
+;Adapted From https://rosettacode.org/wiki/Parsing/RPN_calculator_algorithm
+(define (calculate-RPN lst)
+  (for/fold ([stack '()]) ([token lst])
+    (printf "~a\t -> ~a~N" token stack);Print out the Stack
+    (match* (token stack)
+     [((? number? n) s) (cons n s)]
+     [('+ (list x y s ___)) (cons (+ x y) s)]
+     [('- (list x y s ___)) (cons (- y x) s)]
+     [('* (list x y s ___)) (cons (* x y) s)]
+     [('/ (list x y s ___)) (cons (/ y x) s)]
+     [('^ (list x y s ___)) (cons (expt y x) s)]
+     [(x s) (error "calculate-RPN: Cannot calculate the expression:" 
+                   (reverse (cons x s)))])))
+
+
+'(calculate-RPN '(6 3 1 / -));Example 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
