@@ -229,7 +229,9 @@ solutions
                    (reverse (cons x s)))])))
 
 
-(calculate-RPN '(6 3 1 / -))
+'(calculate-RPN '(6 3 1 / -))
+
+'(calculate-RPN '(6 3 / 1 -))
 
 ;(define emptylst '())
 ;(append emptylst (permutations (list 2 7 9 10 50 25)))
@@ -280,8 +282,10 @@ solutions
 
 
 (define (posSolu lst)(map make-rpn posSolPerm))
+(length (posSolu posSolPerm))
 ;(posSolu posSolPerm)
 
+;(calculate-RPN (posSolu posSolPerm))
 ;car and the car of the cdr pops the 2 off the list
 ;(map make-rpn x)
 ;(calculate-RPN (posSolu x))
@@ -305,15 +309,73 @@ solutions
   ;call valid-rpn? again. pop 2 off stack and eval it, then push to the stack 
       ;()))
 (define templst (list -1 1 1))
-(is-valid-rpn? templst)
+'(is-valid-rpn? templst)
 
 
 
 
 
+#| Steps To RPN
+
+- Pass the list of all posible Combinations into RPN Function 8! = 40320 posible combinations
+- 
+
+|#
+
+;VERSION 2
+(define (is-valid-rpn2? e [s '()])
+  (begin
+    (printf "~a\t -> ~a~N" e s)
+    (if (null? e)
+        (if (= (car s) 1) #t #f);If the Stack is = 1 at the end, RPN = true else false
+        (if (= (car e) 1);If the car of the list is 1
+            (is-valid-rpn2? (cdr e) (cons (car e) s));Call is-valid-rpn? with the Cdr and add 1 to the stack
+            (is-valid-rpn2? (cdr e) (cons(+(car s) (cadr s))'()));ELSE RPN, Add whatevers on the stack together
+        ))))
+  ;call valid-rpn? again. pop 2 off stack and eval it, then push to the stack 
+      ;()))
+
+'(is-valid-rpn2? (list 1 1 -1))
+
+(define templst2 (remove-duplicates(permutations (list 1 1 -1))))
+'(map is-valid-rpn2? templst2)
 
 
 
+
+;VERSION 3
+(define-syntax letcc
+  (syntax-rules ()
+    ((letcc var body ...)
+     (call-with-current-continuation
+       (lambda (var)  body ... )))))
+
+(define-syntax try 
+  (syntax-rules () 
+    ((try var a . b) 
+     (letcc success 
+       (letcc var (success a)) . b))))
+
+(define (is-valid-rpn3? e [s '()])
+  (begin
+    (printf "~a\t -> ~a~N" e s)
+    (if (null? e)
+        (if (equal? (car s) 1) #t #f);If the Stack is = 1 at the end, RPN = true else false /if target?
+        (if (equal? (car e) 1);If the car of the list is 1
+            (is-valid-rpn3? (cdr e) (cons (car e) s));Call is-valid-rpn? with the Cdr and add 1 to the stack
+            ( is-valid-rpn3? (cdr e) (cons(eval((car e) (car s) (car s))ns)'()));ELSE RPN, Add whatevers on the stack together and cons it onto a new list
+        ))))
+
+'(is-valid-rpn3? (list 1 1 -1))
+
+(remove-duplicates(permutations (list 1 1 '-)))
+
+(define templst3 (remove-duplicates(permutations (list 1 1 -))))
+(map is-valid-rpn3? templst3)
+
+
+;(define fgh (list - 1 1))
+;(eval((car fgh)(cadr fgh) (cadr fgh))ns)
 
 
 
