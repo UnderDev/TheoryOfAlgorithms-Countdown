@@ -10,7 +10,7 @@
 (define lNums (list 25 50 75 100))
 
 ; Defining the List of Large Numbers
-(define operators '(list - + / *))
+(define operators '(- + / *))
 
 ;Function to get a random Number from the List Passed in
 (define (pick-item l)
@@ -110,10 +110,6 @@ targetNum
 
 
 
-
-
-
-
 ;=================================> Pos Solution Six Numbers <==============================
 ;Copyed From https://rosettacode.org/wiki/24_game/Solve#Racket
 ; Dosnt Work For All Numbers
@@ -163,28 +159,64 @@ targetNum
 ;=================================> Calculate Reverse Polish Notation <==============================
 ;Adapted From https://rosettacode.org/wiki/Parsing/RPN_calculator_algorithm
 (define (calculate-RPN lst)
-  (for/fold ([stack '()]) ([token lst])
-    (printf "~a\t -> ~a~N" token stack);Print out the Stack
+  (for/fold ([stack '()]) ([token (reverse lst)])
+    ;(printf "~a\t -> ~a~N" token stack);Print out the Stack
+    (with-handlers ([exn:fail? (lambda (exn) #f)])
     (match* (token stack)
      [((? number? n) s) (cons n s)]
      [('+ (list x y s ___)) (cons (+ x y) s)]
      [('- (list x y s ___)) (cons (- y x) s)]
      [('* (list x y s ___)) (cons (* x y) s)]
      [('/ (list x y s ___)) (cons (/ y x) s)]
-     [('^ (list x y s ___)) (cons (expt y x) s)]
-     [(x s) (error "calculate-RPN: Cannot calculate the expression:" 
-                   (reverse (cons x s)))])))
+     ))))
 
 
-'(calculate-RPN '(6 3 1 / -));Example 
+'(calculate-RPN '(10 * * 2 / 7 + 3 - 8 50));Example 
 
 
+;=================================> Build Pos RPN List <==============================
+;Function - Gets a random item from the list passed in
+(define (rand-element l)
+  (list-ref l (random (length l))))
+
+; Gets the permutaions and Removes all duplicates from the list
+(define permu (remove-duplicates (permutations (list '- '+ '/ '*  3 7 2 10))))
+
+;Appends the 2 numbers at the start to the list passed in and a random operator at the end
+(define (rpn l)
+  (append (list 50  8) l (list(rand-element operators))))
+
+;maps the list to the function 
+(define (pos-Solu lst)(map rpn permu))
+;(pos-Solu permu)
 
 
+(length (pos-Solu permu))
 
 
+(define target 224)
 
+;=================================> Check and Calculate RPN <==============================
+(define (is-valid-rpn3? e [s '()] [x '()])
+  (begin
+    ;(printf "~a\t -> ~a~N \n" e s)
+    (if (null? e)
+        (if (equal? (car s) target)
+            x 
+            #f)
+        (if (number? (car e));is Car a number?
+            (is-valid-rpn3? (cdr e) (cons (car e) s) (cons (car e) x));if yes add it to the stack
+              (with-handlers ([exn:fail? (lambda (exn) #f)]);catch errors can use 'message to write own message
+                (is-valid-rpn3? (cdr e) (cons (eval((eval(car e)ns)  (cadr s) (car s))ns) '()) (cons (car e)  x)))            
+        )
+     )
+    )
+  )
 
+" Valid RPN Length "
+(length(filter identity(map is-valid-rpn3? (pos-Solu permu))))
+;(map calculate-RPN(filter identity(map is-valid-rpn3? (pos-Solu permu)))) ;length = 576
+(filter identity(map is-valid-rpn3? (pos-Solu permu)))
 
 
 

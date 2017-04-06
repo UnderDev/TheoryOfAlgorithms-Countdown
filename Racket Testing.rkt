@@ -1,7 +1,7 @@
 #lang racket
 
 ; Define The List etc
-(define opers '(list + - * /))
+(define opers (list + - * /))
 
 (define target 125)
 
@@ -217,7 +217,7 @@ solutions
 
 (define (calculate-RPN lst)
   (for/fold ([stack '()]) ([token lst])
-    (printf "~a\t -> ~a~N" token stack)
+    ;(printf "~a\t -> ~a~N" token stack)
     (match* (token stack)
      [((? number? n) s) (cons n s)]
      [('+ (list x y s ___)) (cons (+ x y) s)]
@@ -231,7 +231,7 @@ solutions
 
 '(calculate-RPN '(6 3 1 / -))
 
-'(calculate-RPN '(6 3 / 1 -))
+(calculate-RPN '(6 3 / 1 -))
 
 ;(define emptylst '())
 ;(append emptylst (permutations (list 2 7 9 10 50 25)))
@@ -283,7 +283,7 @@ solutions
 
 (define (posSolu lst)(map make-rpn posSolPerm))
 (length (posSolu posSolPerm))
-;(posSolu posSolPerm)
+'(posSolu posSolPerm)
 
 ;(calculate-RPN (posSolu posSolPerm))
 ;car and the car of the cdr pops the 2 off the list
@@ -356,26 +356,87 @@ solutions
      (letcc success 
        (letcc var (success a)) . b))))
 
-(define (is-valid-rpn3? e [s '()])
+
+;kinda works on some expresions
+(define (is-valid-rpn4? e [s '()] [x '()])
   (begin
     (printf "~a\t -> ~a~N" e s)
     (if (null? e)
-        (if (equal? (car s) 1) #t #f);If the Stack is = 1 at the end, RPN = true else false /if target?
-        (if (equal? (car e) 1);If the car of the list is 1
-            (is-valid-rpn3? (cdr e) (cons (car e) s));Call is-valid-rpn? with the Cdr and add 1 to the stack
-            ( is-valid-rpn3? (cdr e) (cons(eval((car e) (car s) (car s))ns)'()));ELSE RPN, Add whatevers on the stack together and cons it onto a new list
-        ))))
+        x
+        (if (number? (car e));is Car a number?
+            (is-valid-rpn4? (cdr e) (cons (car e) s) (cons (car e) x));if yes add it to the stack
+            (if (> (length s) 1);else 
+                (is-valid-rpn4? (cdr e) (cons(eval((car e) (car s) (cadr s))ns)'())(cons (car e) x))           
+                #f
+                )
+            ))))
+;PASS IN THE LIST TO IS-VALID-RPN
+;CHECK IF THE LIST IS NULL (YES-> RETURN THE STACK)
+; ELSE CHECK IF THE CAR OF THE LIST IS A NUMBER (YES -> ADD THE NUMBER TO THE STACK AND CALL IS-VALID-RPN WITH THE CDR)
+;  ELSE IF (STACK LENGTH > 2) CREATE A NEW LIST FROM (EVAL(THE OPERATOR FROM THE LIST AND THE 2 NUMBERS FROM THE STACK)) AND CALL CDR ON THE REST OF THE LIST
+;
 
-'(is-valid-rpn3? (list 1 1 -1))
-
-(remove-duplicates(permutations (list 1 1 '-)))
-
-(define templst3 (remove-duplicates(permutations (list 1 1 -))))
-(map is-valid-rpn3? templst3)
 
 
-;(define fgh (list - 1 1))
-;(eval((car fgh)(cadr fgh) (cadr fgh))ns)
+
+;Function - Gets a random item from the list passed in
+(define (rand-element l)
+  (list-ref l (random (length l))))
+
+; Gets the permutaions and Removes all duplicates from the list
+(define permu (remove-duplicates (permutations (list - + / *  3 7 2 10))))
+
+;Appends the 2 numbers at the start to the list passed in and a random operator at the end
+(define (rpn l)
+  (append (list 50  8) l (list(rand-element opers))))
+
+;maps the list to the function 
+(define (pos-Solu lst)(map rpn permu))
+;(pos-Solu permu)
+
+
+(length (pos-Solu permu))
+
+
+
+
+(define (is-valid-rpn3? e [s '()] [x '()])
+  (begin
+    ;(printf "~a\t -> ~a~N" e s)
+    (if (null? e)
+        (list x s)
+        (if (number? (car e));is Car a number?
+            (is-valid-rpn3? (cdr e) (cons (car e) s) (cons (car e) x));if yes add it to the stack
+              (with-handlers ([exn:fail? (lambda (exn) #f)]);catch errors can use 'message to write own message
+                (is-valid-rpn3? (cdr e) (cons (eval((car e) (cadr s) (car s))ns)'()) (cons (car e) x)))            
+            ))))
+
+
+;(is-valid-rpn3? (list 1 1 -1))
+
+;(remove-duplicates(permutations (list 1 2 '-)))
+;(pos-Solu permu)
+
+
+(define (f lst)
+  (filter positive? lst))
+
+(define (r lst)
+  (filter real? lst))
+
+(define (i lst)
+  (eval lst))
+
+;(define templst3 (remove-duplicates(permutations (list 1 2 3 + -))))
+(filter identity(map is-valid-rpn3? (pos-Solu permu))) ;length = 576
+
+
+             
+
+
+
+
+
 
 
 
