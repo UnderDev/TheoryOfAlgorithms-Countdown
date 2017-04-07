@@ -199,24 +199,51 @@ targetNum
 ;=================================> Check and Calculate RPN <==============================
 (define (is-valid-rpn3? e [s '()] [x '()])
   (begin
-    ;(printf "~a\t -> ~a~N \n" e s)
+    (printf "~a\t -> ~a~N \n" e s);prints out the list and stack
     (if (null? e)
-        (if (equal? (car s) target)
+        ;(if (equal? (car s) target)
             x 
-            #f)
+            ;#f)
         (if (number? (car e));is Car a number?
             (is-valid-rpn3? (cdr e) (cons (car e) s) (cons (car e) x));if yes add it to the stack
-              (with-handlers ([exn:fail? (lambda (exn) #f)]);catch errors can use 'message to write own message
-                (is-valid-rpn3? (cdr e) (cons (eval((eval(car e)ns)  (cadr s) (car s))ns) '()) (cons (car e)  x)))            
+              ;(with-handlers ([exn:fail? (lambda (exn) #f)]);catch errors can use 'message to write own message
+                (is-valid-rpn3? (cdr e)
+         (begin
+         (cons ;Cons all of this onto the stack 
+          ;(
+          (eval ((eval(car e)ns) (cadr s) (car s)) ns)
+          ;)
+         s)          
+          (remove (car s) s)
+         )
+        (cons (car e) x));)             
         )
      )
     )
   )
 
+(cons 1 (cons 2 (cons 3 '())))
+
+(define (pop lst)
+  (car lst))
+
+
+;(pop (list 1 2 3))
+
+
 " Valid RPN Length "
-(length(filter identity(map is-valid-rpn3? (pos-Solu permu))))
-;(map calculate-RPN(filter identity(map is-valid-rpn3? (pos-Solu permu)))) ;length = 576
-(filter identity(map is-valid-rpn3? (pos-Solu permu)))
+;(length(filter identity(map is-valid-rpn3? (pos-Solu permu))))
+;(map calculate-RPN(filter identity(map is-valid-rpn3? (pos-Solu permu)))) ;length = 576, Working, but not needed
+
+(define templst3 (remove-duplicates(permutations (list 1 2 3'+ '-))))
+"Function is-valid-rpn3? 36 "
+(length(filter identity(map is-valid-rpn3? templst3)))
+
+"All Permutations of the List 120"
+(length templst3)
+
+;(filter identity(map is-valid-rpn3? templst3))
+;(filter identity(map is-valid-rpn3? (pos-Solu permu)))
 
 
 
