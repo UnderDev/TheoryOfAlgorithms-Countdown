@@ -194,58 +194,58 @@ targetNum
 (length (pos-Solu permu))
 
 
-(define target 224)
+(define target 646)
 
 ;=================================> Check and Calculate RPN <==============================
-(define (is-valid-rpn3? e [s '()] [x '()])
+; Steps Involved in function below:
+; 1) Take in a list called e, and 2 optional lists.
+; 2) Check if the list is null
+; 3) If the list is null, Check dose it = the target number and return the equation, ELSE return #f
+; 4) If the list is not null, Check the car of the list for the Following:
+;
+;      (a) Is it a number? if yes add it to the stack and recall the function with the cdr of the list, also add it to the valid equation list.
+;
+;      (b) Is the car of the list a Procedure? AND the car of the stack a integer. (With error handling)
+;            If TRUE, call the function again with the cdr of the list, then check the following:
+;
+;            (i) Is the length of the stack > 2.(May be a problem) -> TRUE? create a lambda function that pops 2 numbers off the stack, evaluates them.
+;             Adds them to the stack with the last item that didnt get evaluated.
+;
+;            (ii) Is the stack = 2, Pops 2 numbers off the stack, applys the opperator to them and evaluates it.
+;
+;            (iii) Else #f
+;
+;       (c) Else #f
+
+
+(define (is-valid-rpn3? e [s '()] [eq '()])
   (begin
-    (printf "~a\t -> ~a~N \n" e s);prints out the list and stack
+    ;(printf "~a\t -> ~a~N \n" e s);Prints out the List and Stack
     (if (null? e)
-        ;(if (equal? (car s) target)
-            x 
-            ;#f)
-        (if (number? (car e));is Car a number?
-            (is-valid-rpn3? (cdr e) (cons (car e) s) (cons (car e) x));if yes add it to the stack
-              ;(with-handlers ([exn:fail? (lambda (exn) #f)]);catch errors can use 'message to write own message
-                (is-valid-rpn3? (cdr e)
-         (begin
-         (cons ;Cons all of this onto the stack 
-          ;(
-          (eval ((eval(car e)ns) (cadr s) (car s)) ns)
-          ;)
-         s)          
-          (remove (car s) s)
-         )
-        (cons (car e) x));)             
-        )
-     )
-    )
-  )
+        (if (equal? (car s) target)
+        (reverse eq); or return s (The Stack or answer)
+        #f)
+        (cond
+          [(number? (car e))(is-valid-rpn3? (cdr e) (cons (car e) s) (cons (car e) eq))]
+          [(with-handlers ([exn:fail? (lambda (exn) #f)])
+             (and (procedure? (eval(car e) ns)) (integer? (cadr s) ))
+             (is-valid-rpn3? (cdr e)
+                             (cond
+                               [(> (length s) 2) ((lambda (x y) (reverse(list y x))) (eval ((eval(car e)ns) (cadr s) (car s)) ns) (last s))]
+                               [(equal? (length s) 2) (list(eval ((eval(car e)ns) (cadr s) (car s)) ns))]
+                               [else (list #f)])
+                             (cons (car e) eq)))]
+          [else #f]))))
 
-(cons 1 (cons 2 (cons 3 '())))
+;Testing only 
+(define templst3 (remove-duplicates(permutations (list 1 2 3 '+ '-))))
+;(filter identity(filter identity(map is-valid-rpn3? templst3)))
 
-(define (pop lst)
-  (car lst))
-
-
-;(pop (list 1 2 3))
-
-
-" Valid RPN Length "
-;(length(filter identity(map is-valid-rpn3? (pos-Solu permu))))
-;(map calculate-RPN(filter identity(map is-valid-rpn3? (pos-Solu permu)))) ;length = 576, Working, but not needed
-
-(define templst3 (remove-duplicates(permutations (list 1 2 3'+ '-))))
-"Function is-valid-rpn3? 36 "
-(length(filter identity(map is-valid-rpn3? templst3)))
-
-"All Permutations of the List 120"
-(length templst3)
+;All Permutations of a List size 5 = 120
+;templst3
 
 ;(filter identity(map is-valid-rpn3? templst3))
-;(filter identity(map is-valid-rpn3? (pos-Solu permu)))
-
-
+(filter identity(map is-valid-rpn3? (pos-Solu permu)));9187 pos answers of valid reverse polish notation
 
 
 
