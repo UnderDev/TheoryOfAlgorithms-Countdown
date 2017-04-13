@@ -1,30 +1,15 @@
 #lang racket
 
 ; Define The List etc
-(define ops '(list + - * /))
-(define a 5)
-(define b 25)
-(define c 10)
-(define d 50)
-(define e 7)
-(define f 3)
+(define opers (list + - * /))
 
-(define t 125)
+(define target 125)
+
+;Define a Namespace (needed for eval)
+(define ns (make-base-namespace))
+
 
 (define numsPicked (list 5 25 10))
-
-; Hard Coded List of Posible Solutions
-(define evall (list
-	(+ a b)
-	(+ b a)
-	(- a b)
-	(- b a)
-	(* a b)
-	(* b a)
-	(/ a b)
-	(/ b a)
-))
-evall
 
 ; Recursion - Defining a function that you can pass in an operator and a list
 ; If The Null List? Return the List otherwise 1 - Do the following
@@ -86,27 +71,8 @@ evall
   (permutations (combinations (list a b c) 2)) =
   (5 25)  (5 10)  (25 10)
 
-
 (combinations(permutations (list a b c) ))
 |#
-
-
-(define (plussss l)
-  (if (null? l)
-      1
-      (begin
-       (display l)
-      ;(+ (car l)) (plussss (car (cadr l)))))))
-       (+ (car (car l)) (plussss (cadr(car l)))))))
-      ;( +(car(car l)) (car (cadr l))))))
-
-;first item in the list and the first value + first item in the list and cdr of the first value
-;( + (car(car posEval)) (cadr (car posEval)))
-;(car (cdr (car posEval)))
-;(car (car posEval))
-
-;(map plussss (list posEval))
-
 
 '(map minus (permutations(list a b)))
 '(map mult  (permutations(list a b)))
@@ -119,8 +85,6 @@ evall
 
 '(list->set (map plus (permutations(list a b))))
 
-
-
 '(combinations (list a b c d e f) 2)
 '(permutations (combinations (list a b c) 2))
 '(permutations (combinations(list a b c) 2))
@@ -130,112 +94,99 @@ evall
 '(permutations(list numsPicked))
 
 
+"Numbers Used"
+numsPicked
+
 ;Define a list of the cartesian-product of the following lists
-;Results
-;(* 5 5)
-  ;(* 5 25)
-  ;(* 5 10)
-  ;(* 25 5)
-  ;Etc
-(define posEval (cartesian-product '(* - + /) ( list 5 25 10 5)  (list 5 25 10 5)))
-
-;(define posEval (cartesian-product (list 1 2) (list 4 3)))
-
+(define posEval (cartesian-product opers numsPicked  numsPicked))
 
 ;Print out the cartesian-product
-posEval
+"cartesian-product Of List"
+'posEval
 
 
-;Define a Namespace (needed for eval)
-(define ns (make-base-namespace))
+;(define Comb (combinations numsPicked 2))
+(define Permut (permutations numsPicked))
+'Permut
+(define PermutCart (cartesian-product opers Permut))
+'PermutCart
 
-;(car(posval) ns)
+
+(append opers (car Permut))
+
+#|
+(permutations numsPicked) 
+'((5 25 10)
+  (25 5 10)
+  (5 10 25)
+  (10 5 25)
+  (25 10 5)
+  (10 25 5))
 
 
-;Atempted Recursion on list + using eval to evaluate them
+|#
+
+
+;Recursion on list + using eval to evaluate them
 (define (evalListRec l a)
   (if (null? l)
       a
-      (evalListRec (cdr l)(cons (eval (car l) ns) a))))
+      (evalListRec (cdr l)(cons (car l) a))))
 
 ;New function passing in a list, and calling anoter function 
 (define (stuff l )(evalListRec l null))
 
-;
 (define p (stuff posEval))
+;p
 
-;Call the function and evaluate
-'p
+
+
+
+(define (testCond l a)
+  (cond ((null? l) a)
+        ((and (integer? (eval (car l) ns)) (positive? (eval (car l) ns)) (equal? 250 (eval (car l) ns))) (testCond (cdr l)(cons (car l)  a)))
+        (else (testCond (cdr l) a))))
+
 
 
 
 ;============================= Custom Cartisian-product ============================
-;(define (X . sets)
-;  (if (null? sets) '(())
-;      (let ((tails (apply X (cdr sets))))
-;        (apply append
-;               (map (lambda (h)
-;                      (map (lambda (t) (cons h t)) tails))
-;                    (car sets))))))
-;
-;(define lst (X ops numsPicked numsPicked))
-;(define (stuffff l )(evalListRec lst null))
-;
-;;
-;(define ccc (stuffff lst))
-;ccc
-;;Not Correct but looks promising
-;;(define posEval (cartesian-product '(* - + /) ( list 5 25 10)  (list 5 25 10)))
-;;(X ops posEval posEval)
+(define (X . sets)
+  (if (null? sets) '(())
+      (let ((tails (apply X (cdr sets))))
+        (apply append
+               (map (lambda (h)
+                      (map (lambda (t) (cons h t)) tails))
+                    (car sets))))))
+
+
+(define lst (X opers numsPicked numsPicked))
+
+(define (stuffff l )(testCond lst null))
+
+(define ccc (stuffff lst))
+'ccc
+
+
+;Not Correct but looks promising
+(define posEval2 (cartesian-product opers numsPicked  numsPicked))
+
+'(X opers numsPicked numsPicked numsPicked) ; (- 25 5 5) etc
+'(eval (car posEval2) ns)
 ;===================================================================================
 
-'(eval (car posEval) ns)
-
-;(= (modulo 10 4) 2)
-
-
-
-;;Function below is n power n each loop
-;;Gets all the negitive numbers
-;(define (evalCond l a)
-;  (if (null? l)
-;      a
-;      (begin
-;       (display l)
-;      (evalCond (cdr l)(cons (eval (car l) ns) a)))
-;    ))
-
-
-
-
-;;Gets all the negitive numbers
-;(define (evalCond l a)
-;  (if (null? l)
-;      a
-;      (begin
-;       (display l)
-;    (if (positive? (eval (car l) ns))
-;        (evalCond (cdr l) a)
-;      (evalCond (cdr l)(cons (eval (car l) ns) a)))
-;    )))
-
-;(and (= 2 2) (> 2 1))
-
-
 ;Working through the list of pos solutions
-;'((* 5 5)
-;  (* 5 25))
-(car posEval);'(* 5 5)
-(cdr (car posEval));'(5 5)
-(car(cdr (car posEval)));5
-(cadr(cdr (car posEval)));5
-(equal? (car(cdr (car posEval))) (cadr(cdr (car posEval))));#t
+;(car posEval);'(* 5 5)
+;(cdr (car posEval));'(5 5)
+;(car(cdr (car posEval)));5
+;(cadr(cdr (car posEval)));5
+;(equal? (car(cdr (car posEval))) (cadr(cdr (car posEval))));#t
 
 
 ;Atempted Recursion on list + using eval to evaluate them
 (define (evalCond l a)
   (cond ((null? l) a)
-        ((and (integer? (eval (car l) ns)) (positive? (eval (car l) ns)) (equal? 30 (eval (car l) ns))) (evalCond (cdr l)(cons (car l)  a)))
+        ((and (integer? (eval (car l) ns)) (positive? (eval (car l) ns)) (equal? target (eval (car l) ns))) (evalCond (cdr l)(cons (car l)  a)))
         (else (evalCond (cdr l) a))))
 
 ; Works for getting all the pairs as a list that give me a number = 30
@@ -247,20 +198,6 @@ posEval
 
 
 
-;(define (evalCond l a)
-;  (if (null? l)
-;      a
-;      (and (if (positive? (eval (car l) ns)) (integer? (eval (car l) ns))
-;          (evalCond (cdr l)(cons (eval (car l) ns) a)))
-;          (evalCond (cdr l) a)
-;      )))
-
-
-   ; Both Working 100%
-   ; (if (integer? (eval (car l) ns))
-   ; (if (positive (eval (car l) ns))
-
-
 ;New function passing in a list, and calling anoter function 
 (define (stuffCond l )(evalCond l null))
 
@@ -268,7 +205,241 @@ posEval
 (define solutions (remove-duplicates(stuffCond posEval)))
 
 ;Call the function and evaluate
+"Solution"
 solutions
+
+
+
+
+;============================> Reverse Polish Notation Solution <=============================
+"==========> Reverse Polish Notation"
+;https://rosettacode.org/wiki/Parsing/RPN_calculator_algorithm#Racket
+
+(define (calculate-RPN lst)
+  (for/fold ([stack '()]) ([token lst])
+    ;(printf "~a\t -> ~a~N" token stack)
+    (match* (token stack)
+     [((? number? n) s) (cons n s)]
+     [('+ (list x y s ___)) (cons (+ x y) s)]
+     [('- (list x y s ___)) (cons (- y x) s)]
+     [('* (list x y s ___)) (cons (* x y) s)]
+     [('/ (list x y s ___)) (cons (/ y x) s)]
+     [('^ (list x y s ___)) (cons (expt y x) s)]
+     [(x s) (error "calculate-RPN: Cannot calculate the expression:" 
+                   (reverse (cons x s)))])))
+
+
+'(calculate-RPN '(6 3 1 / -))
+
+(calculate-RPN '(6 3 / 1 -))
+
+;(define emptylst '())
+;(append emptylst (permutations (list 2 7 9 10 50 25)))
+
+
+;(append emptylst (permutations (list "a" "b" "c" "d")))
+
+;(define posEval3 (cartesian-product emptylst (permutations (list "a" "b" "c" "d"))))
+
+
+;Racket Help In Class
+
+;RACKET HELP RPN
+;see num. add to stack
+;see operator , pop 2 nums from stack, apply the operator to the 2 nums and add back to the list
+;every per/combination ,check on every part of the stack if the number gets to a - fraction etc.
+
+;!quote on operators to not eval
+
+
+;print stack on getting the right
+
+;evaluate correct RPN
+;(1 1 1 -1 -1 1 1 1 -1 -1 -1)
+
+;cart (op op op op op) 1024 pos 
+;list length ********
+
+;cp all ops all nums
+
+
+
+
+;permutatin factorial
+
+;filter 
+; (100 25 '- 1 '+ )
+
+;Picks a random item from the list Passed in
+(define (rand-item l)
+  (list-ref l (random (length l))))
+
+(define startPerm (list '- '+ '/ '* 5 3 25 100))
+(define posSolPerm (remove-duplicates (permutations startPerm)))
+
+(define (make-rpn l)
+  (append (list 2 9) l(list (rand-item opers))))
+
+
+(define (posSolu lst)(map make-rpn posSolPerm))
+(length (posSolu posSolPerm))
+'(posSolu posSolPerm)
+
+;(calculate-RPN (posSolu posSolPerm))
+;car and the car of the cdr pops the 2 off the list
+;(map make-rpn x)
+;(calculate-RPN (posSolu x))
+
+
+;e = expresion
+;s=stack
+;[s 0] optional argument s=0
+;(if (=(car (list 1 1 -1)) 1)#t #f)
+
+;======= Checking to see if passed in list is valid RPN
+(define (is-valid-rpn? e [s 0])
+  (begin
+    (printf "~a\t -> ~a~N" e s)
+    (if (null? e)
+        (if (= s 1) #t #f);If the Stack is = 1 at the end, RPN = true else false
+        (if (= (car e) 1);If the car of the list is 1
+            (is-valid-rpn? (cdr e) (+ 1 s));Call is-valid-rpn? with the Cdr and add 1 to the stack
+            (is-valid-rpn? (cdr e) (+ (car e) (cadr e))));ELSE RPN, Add 1 to what ever is on the stack
+        )))
+  ;call valid-rpn? again. pop 2 off stack and eval it, then push to the stack 
+      ;()))
+(define templst (list -1 1 1))
+'(is-valid-rpn? templst)
+
+
+
+
+
+#| Steps To RPN
+
+- Pass the list of all posible Combinations into RPN Function 8! = 40320 posible combinations
+- 
+
+|#
+
+;VERSION 2
+(define (is-valid-rpn2? e [s '()])
+  (begin
+    (printf "~a\t -> ~a~N" e s)
+    (if (null? e)
+        (if (= (car s) 1) #t #f);If the Stack is = 1 at the end, RPN = true else false
+        (if (= (car e) 1);If the car of the list is 1
+            (is-valid-rpn2? (cdr e) (cons (car e) s));Call is-valid-rpn? with the Cdr and add 1 to the stack
+            (is-valid-rpn2? (cdr e) (cons(+(car s) (cadr s))'()));ELSE RPN, Add whatevers on the stack together
+        ))))
+  ;call valid-rpn? again. pop 2 off stack and eval it, then push to the stack 
+      ;()))
+
+'(is-valid-rpn2? (list 1 1 -1))
+
+(define templst2 (remove-duplicates(permutations (list 1 1 -1))))
+'(map is-valid-rpn2? templst2)
+
+
+
+
+;VERSION 3
+(define-syntax letcc
+  (syntax-rules ()
+    ((letcc var body ...)
+     (call-with-current-continuation
+       (lambda (var)  body ... )))))
+
+(define-syntax try 
+  (syntax-rules () 
+    ((try var a . b) 
+     (letcc success 
+       (letcc var (success a)) . b))))
+
+
+;kinda works on some expresions
+(define (is-valid-rpn4? e [s '()] [x '()])
+  (begin
+    (printf "~a\t -> ~a~N" e s)
+    (if (null? e)
+        x
+        (if (number? (car e));is Car a number?
+            (is-valid-rpn4? (cdr e) (cons (car e) s) (cons (car e) x));if yes add it to the stack
+            (if (> (length s) 1);else 
+                (is-valid-rpn4? (cdr e) (cons(eval((car e) (car s) (cadr s))ns)'())(cons (car e) x))           
+                #f
+                )
+            ))))
+;PASS IN THE LIST TO IS-VALID-RPN
+;CHECK IF THE LIST IS NULL (YES-> RETURN THE STACK)
+; ELSE CHECK IF THE CAR OF THE LIST IS A NUMBER (YES -> ADD THE NUMBER TO THE STACK AND CALL IS-VALID-RPN WITH THE CDR)
+;  ELSE IF (STACK LENGTH > 2) CREATE A NEW LIST FROM (EVAL(THE OPERATOR FROM THE LIST AND THE 2 NUMBERS FROM THE STACK)) AND CALL CDR ON THE REST OF THE LIST
+;
+
+
+
+
+;Function - Gets a random item from the list passed in
+(define (rand-element l)
+  (list-ref l (random (length l))))
+
+; Gets the permutaions and Removes all duplicates from the list
+(define permu (remove-duplicates (permutations (list - + / *  3 7 2 10))))
+
+;Appends the 2 numbers at the start to the list passed in and a random operator at the end
+(define (rpn l)
+  (append (list 50  8) l (list(rand-element opers))))
+
+;maps the list to the function 
+(define (pos-Solu lst)(map rpn permu))
+;(pos-Solu permu)
+
+
+(length (pos-Solu permu))
+
+
+
+
+(define (is-valid-rpn3? e [s '()] [x '()])
+  (begin
+    ;(printf "~a\t -> ~a~N" e s)
+    (if (null? e)
+        (list x s)
+        (if (number? (car e));is Car a number?
+            (is-valid-rpn3? (cdr e) (cons (car e) s) (cons (car e) x));if yes add it to the stack
+              (with-handlers ([exn:fail? (lambda (exn) #f)]);catch errors can use 'message to write own message
+                (is-valid-rpn3? (cdr e) (cons (eval((car e) (cadr s) (car s))ns)'()) (cons (car e) x)))            
+            ))))
+
+
+;(is-valid-rpn3? (list 1 1 -1))
+
+;(remove-duplicates(permutations (list 1 2 '-)))
+;(pos-Solu permu)
+
+
+(define (f lst)
+  (filter positive? lst))
+
+(define (r lst)
+  (filter real? lst))
+
+(define (i lst)
+  (eval lst))
+
+;(define templst3 (remove-duplicates(permutations (list 1 2 3 + -))))
+(filter identity(map is-valid-rpn3? (pos-Solu permu))) ;length = 576
+
+
+             
+
+
+
+
+
+
+
+
 
 
 
