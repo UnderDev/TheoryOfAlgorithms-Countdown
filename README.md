@@ -15,6 +15,10 @@ The project will be written in Racket and will hopefully demonstrate the uses of
 * Brute Force  
   Loop through every posible combination and evaluate the results;
   
+* Reverse Polish Notation   
+  Convert the given List of posible answers to RPN and return any equation from the stack that equals the given target number.
+  The stack cannot contain fractions/Decemals/uneven numbers at any time. If it dose, move onto the next item on the list.
+  
 * Map, Permutations, Combinations  
   ```(map minus (permutations (combinations (list a b c d) 2)))```   
   Get every permentation of the list of combinations of 2 from the List of Choosen numbers.
@@ -37,10 +41,14 @@ The project will be written in Racket and will hopefully demonstrate the uses of
 
 * Check for Operators used on a Zero value.
 
+* Check the stack for Integer,Positive,Numbers 
 
 ## Installation
+1) Download [Racket](https://racket-lang.org/download/)
 
-TODO: Describe the installation process
+2) Download/Fork this Repository.
+
+3) Open/Run the Script CountDown Numbers Game.rkt
 
 
 ## Rules of The Game
