@@ -133,7 +133,7 @@ The Algorithm dose calculate and return all equations to get the taraget number,
 As a result, when testing the Algorithm on different target numbers i found that it seemed to find equations for smaller target more frequently.
 
 
-**Posible Solution**
+**Posible Solution**   
 A solution to this, given more time, would be to first find all the valid ways to generate Valid RPN for 6 numbers and 4 opperators using placeholders for the numbers and opperators.
 
 With this list, i could then take my choosen numbers and opperators and replace each item from the lists into my Valid RPN list, getting all the permutations.
