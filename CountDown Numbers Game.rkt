@@ -1,28 +1,25 @@
 #lang racket
 
 ;=================================>  Inital Setup <=======================================
+; Define The NameSpace for Eval function
+(define ns (make-base-namespace))
+
 ; Defining the List of Small Numbers
-(define sNums (list 1 1 2 2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 10 10))
+(define posNums (list 1 1 2 2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 10 10 25 50 75 100))
 
-; Defining the List of Large Numbers
-(define lNums (list 25 50 75 100))
-
-; Defining the List of Large Numbers
+;Opperators Allowd
 (define operators '(- + / *))
 
-;Function to get a random Number from the List Passed in
-(define (pick-item l)
-  (list-ref l (random (length l))))
+;Function to get n random Numbers from the List Passed in
+(define (pickRandom l num [t'()])
+  (if(null? l)
+     #f
+     (cond
+       [(equal? (length t) num) t]
+       [else (pickRandom (shuffle(cdr l)) num (cons (first l) t))])))
 
-;(pick-item(list 3 4 5 6 7)) ;Working But need to do several times
-
-;Maby get a random number in the range 1-10 for small numbers
-
-; Defining the List of Chosen Numbers
-(define ChosenNums sNums)
-
-; Define The NameSpace for Eval
-(define ns (make-base-namespace))
+;Define rndChosenNums, which is the 6 randomly generated numbers choosen
+(define rndChosenNums (pickRandom posNums 6))
 
 ; Random Number Function Takes in Two Numbers and returns a number in that range
 (define (rnd-num a b)
@@ -39,11 +36,14 @@
 ;(modulo 10 4)) ;Gets the Moduls of 2 numbers
 ;(list-tail lst 2) Gets the remaining items from the list after pos 2
 ;(andmap positive? (list 1 2 3 -8) Checks every item on the list to see if positive this returns #f
+;==========================================================================================
 
 
 
+;==========================================================================================
+;===========================>  Two Numbers Solved & Optimized <============================
+;==========================================================================================
 
-;=================================> Two Numbers Solved & Optimized <=======================
 ; Cartesian cartesian-product gets all permemtations of the lists passed in 
 (define posEval (remove-duplicates (cartesian-product '(* - + /) ( list 5 25)  (list 5 25))))
 (define trgtNum 125)
@@ -67,7 +67,8 @@ trgtNum
 (evaluateList posEval)
 
 
-;=================================> Simular Problem to CountDown Numbers Game <============
+
+;=======================> Simular Problem To CountDown Numbers Game <======================
 ; Solution Below is used for a game called 24
 ;Copyed From https://rosettacode.org/wiki/24_game/Solve#Racket
 ; Dosnt Work For All Numbers
@@ -134,21 +135,25 @@ trgtNum
 
 
 ;=================================> Build RPN List <=======================================
-;The following method to generate all posible Permutations is not complete. As it only gives 40320 possible solutions. 
+;The following method is used to generate all posible Permutations and is not complete. As it only gives 40320 solutions. 
+
 ;Function - Gets a random item from the list passed in
 (define (rand-element l)
   (list-ref l (random (length l))))
 
+;Create my starting rpn list
+(define rpnList (flatten (cons operators (pickRandom rndChosenNums 4))))
+
 ;Gets the permutaions and Removes all duplicates from the list
-(define permu (remove-duplicates (permutations (list '- '+ '/ '*  3 7 2 10))))
+(define permu (remove-duplicates (permutations rpnList)))
+
 
 ;Appends the 2 numbers (shuffled) at the start of the list passed in and a random operator at the end
-(define (rpn l)
+(define (makePosRpn l)
   (append (shuffle(list 50 8)) l (list(rand-element operators))))
 
 ;Maps the list to the function, 8! or 40320 Posible Permutations  
-(define (pos-Solu lst)(map rpn permu));
-
+(define (pos-Solu lst)(map makePosRpn permu));
 
 ;Brute Force -> Not recommended 
 ;A Brute force method might generate all possible permutations but is 11! and has 39916800 Permutations.
@@ -207,6 +212,9 @@ trgtNum
 
 "Target To Reach"
 targetNum
+
+"Choosen Numbers"
+rndChosenNums
 
 "Solution's for full Game"
 (remove-duplicates (filter identity(map is-valid-rpn? (pos-Solu permu))))
