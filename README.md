@@ -125,11 +125,15 @@ Steps Involved in function below
  
  ```
 
-This Algorithm takes in possible solutions and uses a [Stack](https://en.wikipedia.org/wiki/Stack_(abstract_data_type)) to control if the solution is Valid RPN and follows all the ruls of the game, returning all valid equations that equal the target number.
+This Algorithm takes in posible solutions and uses a [Stack](https://en.wikipedia.org/wiki/Stack_(abstract_data_type)) to control if the solution is Valid RPN and follows all the ruls of the game, returning all valid equations that equal the target number.
 
 ## Limitations of the Algorithm
 The Algorithm dose calculate and return all equations to get the taraget number, but the method i use to geterate all posible pemutations for six numbers and 4 opperators dosnt return all posibilities. The idea was to get all permutations of 4 random numbers and the 4 opperators , then append the last 2 chossen numbers onto each permutation(shuffeled) and a random opperator to the end. This resulted in 8! (40320) posible solutions. Compared to 11! (39916800) which takes up alot of space and time to generate and evaluate.
 
+As a result, when testing the Algorithm on different target numbers i found that it seemed to find equations for smaller target more frequently.
+
+
+**Posible Solution**
 A solution to this, given more time, would be to first find all the valid ways to generate Valid RPN for 6 numbers and 4 opperators using placeholders for the numbers and opperators.
 
 With this list, i could then take my choosen numbers and opperators and replace each item from the lists into my Valid RPN list, getting all the permutations.
