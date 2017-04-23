@@ -141,16 +141,26 @@ trgtNum
 (define (rand-element l)
   (list-ref l (random (length l))))
 
-;Create my starting rpn list
-(define rpnList (flatten (cons operators (pickRandom rndChosenNums 4))))
+
+(define fourNumbers (pickRandom rndChosenNums 4))
+;Create a new list of the opperators and 4 of the randomly choosen Numbers
+(define rpnList (flatten (cons operators fourNumbers)))
 
 ;Gets the permutaions and Removes all duplicates from the list
 (define permu (remove-duplicates (permutations rpnList)))
 
+;Function takes in two lists, and removes all the elements in rmv from list, returning what evers left
+(define (returnRemaining lst rmv)
+  (begin
+    ;(printf "~a\t -> ~a~N \n" list item);Prints out each step 
+    (if (null? rmv)
+        lst
+        (returnRemaining (remq (car rmv) lst) (cdr rmv))
+        )))
 
 ;Appends the 2 numbers (shuffled) at the start of the list passed in and a random operator at the end
 (define (makePosRpn l)
-  (append (shuffle(list 50 8)) l (list(rand-element operators))))
+  (append (shuffle (returnRemaining rndChosenNums fourNumbers)) l (list(rand-element operators))))
 
 ;Maps the list to the function, 8! or 40320 Posible Permutations  
 (define (pos-Solu lst)(map makePosRpn permu));
@@ -210,15 +220,14 @@ trgtNum
 ;Uncomment Below To use
 ;(remove-duplicates (filter identity(filter identity(map is-valid-rpn? testAlgo))))
 
-"Target To Reach"
-targetNum
-
 "Choosen Numbers"
 rndChosenNums
 
+"Target To Reach"
+targetNum
+
 "Solution's for full Game"
 (remove-duplicates (filter identity(map is-valid-rpn? (pos-Solu permu))))
-
 
 ;Brute Force Approach (Not Recommended) - Uncomment Below to use
 ;(remove-duplicates (filter identity(map is-valid-rpn? (rpnBF bruteForce))))
