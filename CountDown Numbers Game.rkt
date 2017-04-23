@@ -226,6 +226,7 @@ rndChosenNums
 "Target To Reach"
 targetNum
 
+;Removes all dublicates from the returned list and filters out all the #f, showing '() for no found solutions, or a list of equations.
 "Solution's for full Game"
 (remove-duplicates (filter identity(map is-valid-rpn? (pos-Solu permu))))
 
