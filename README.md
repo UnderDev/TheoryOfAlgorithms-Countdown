@@ -2,7 +2,9 @@
 
 The following project sets out to solve the Countdown Numbers Game, seen on the popular Tv Show [Countdown.](https://en.wikipedia.org/wiki/Countdown_(game_show))
 
-The project will be written in [Racket](https://racket-lang.org/) and will hopefully demonstrate the different concepts of functional programming.
+The project will be written in [Racket](https://racket-lang.org/) and will hopefully demonstrate the different concepts of [Functional Programming](Functional programming).
+
+Running the program picks 6 random numbers from a list, and a Random target between 101-999 inclusive. The program will then try to find the target following the ruls of the game, printing to the screen all the Reverse Polish Notation equations that equal the target number or '() if no solutions are found.
 
 ## Rules of The Game
 
